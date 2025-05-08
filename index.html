@@ -58,6 +58,7 @@
       border-radius: 6px;
       overflow: hidden;
       margin-bottom: 20px;
+      cursor: pointer;
     }
 
     .progress {
@@ -79,12 +80,12 @@
 
   <div class="bar-container">
     <div class="label">Class Period 1</div>
-    <div class="progress-bar">
+    <div class="progress-bar" id="bar1-container">
       <div class="progress" id="bar1"></div>
     </div>
 
     <div class="label">Class Period 2</div>
-    <div class="progress-bar">
+    <div class="progress-bar" id="bar2-container">
       <div class="progress" id="bar2"></div>
     </div>
   </div>
@@ -92,6 +93,7 @@
   <script>
     const CLASS_PERIOD_SECONDS = 1.2 * 60 * 60; // 1.2 hours
     let elapsedSeconds = 0;
+    let startTime = Date.now();
 
     const bar1 = document.getElementById("bar1");
     const bar2 = document.getElementById("bar2");
@@ -102,8 +104,9 @@
       return `rgb(${r},${g},80)`;
     };
 
-    const interval = setInterval(() => {
-      elapsedSeconds++;
+    const updateProgress = () => {
+      const now = Date.now();
+      elapsedSeconds = Math.floor((now - startTime) / 1000);
       let percent1 = 0, percent2 = 0;
 
       if (elapsedSeconds <= CLASS_PERIOD_SECONDS) {
@@ -120,9 +123,28 @@
       bar2.style.backgroundColor = getColor(percent2);
 
       if (elapsedSeconds >= 2 * CLASS_PERIOD_SECONDS) {
-        clearInterval(interval);
+        clearInterval(timer);
       }
-    }, 1000);
+    };
+
+    const resetTimer = (targetSeconds) => {
+      startTime = Date.now() - targetSeconds * 1000;
+    };
+
+    document.getElementById("bar1-container").addEventListener("click", (e) => {
+  const clickX = e.offsetX;
+  const totalWidth = e.currentTarget.offsetWidth;
+  const fraction = clickX / totalWidth;
+  resetTimer(fraction * CLASS_PERIOD_SECONDS);
+});
+    document.getElementById("bar2-container").addEventListener("click", (e) => {
+  const clickX = e.offsetX;
+  const totalWidth = e.currentTarget.offsetWidth;
+  const fraction = clickX / totalWidth;
+  resetTimer(CLASS_PERIOD_SECONDS + (fraction * CLASS_PERIOD_SECONDS));
+});
+
+    const timer = setInterval(updateProgress, 1000);
   </script>
 
 </body>
