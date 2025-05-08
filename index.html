@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Automata Timer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .caption {
+      font-size: 16px;
+      font-family: serif;
+      margin-bottom: 10px;
+    }
+
+    .bold-caption {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .image-container {
+      margin: 20px auto;
+      width: 400px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .bar-container {
+      margin: 30px auto;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+
+    .progress-bar {
+      background-color: #ddd;
+      width: 100%;
+      height: 30px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      transition: width 1s linear, background-color 1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Automata due May 13!</h1>
+  <div class="caption">You have 2.5 hours to complete this project starting with the beginning of this class period to the end of next class period when it is due</div>
+  <div class="bold-caption">You are graded on quality, creativity, functionality and effort.</div>
+
+  <div class="image-container">
+    <img src="https://imgur.com/BqI9ocg.png" alt="PLTW Automata">
+  </div>
+
+  <div class="bar-container">
+    <div class="label">Class Period 1</div>
+    <div class="progress-bar">
+      <div class="progress" id="bar1"></div>
+    </div>
+
+    <div class="label">Class Period 2</div>
+    <div class="progress-bar">
+      <div class="progress" id="bar2"></div>
+    </div>
+  </div>
+
+  <script>
+    const CLASS_PERIOD_SECONDS = 1.2 * 60 * 60; // 1.2 hours
+    let elapsedSeconds = 0;
+
+    const bar1 = document.getElementById("bar1");
+    const bar2 = document.getElementById("bar2");
+
+    const getColor = (percent) => {
+      const r = Math.floor(76 + (255 - 76) * percent / 100);
+      const g = Math.floor(175 - 175 * percent / 100);
+      return `rgb(${r},${g},80)`;
+    };
+
+    const interval = setInterval(() => {
+      elapsedSeconds++;
+      let percent1 = 0, percent2 = 0;
+
+      if (elapsedSeconds <= CLASS_PERIOD_SECONDS) {
+        percent1 = (elapsedSeconds / CLASS_PERIOD_SECONDS) * 100;
+      } else {
+        percent1 = 100;
+        const secondPeriodElapsed = elapsedSeconds - CLASS_PERIOD_SECONDS;
+        percent2 = (secondPeriodElapsed / CLASS_PERIOD_SECONDS) * 100;
+      }
+
+      bar1.style.width = Math.min(percent1, 100) + "%";
+      bar1.style.backgroundColor = getColor(percent1);
+      bar2.style.width = Math.min(percent2, 100) + "%";
+      bar2.style.backgroundColor = getColor(percent2);
+
+      if (elapsedSeconds >= 2 * CLASS_PERIOD_SECONDS) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>
