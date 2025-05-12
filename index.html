@@ -176,11 +176,12 @@
   const bar1 = document.getElementById("bar1");
   const bar2 = document.getElementById("bar2");
 
-  const getColor = (percent) => {
-    const r = Math.floor(76 + (255 - 76) * percent / 100);
-    const g = Math.floor(175 - 175 * percent / 100);
-    return `rgb(${r},${g},80)`;
-  };
+ const getColor = (percent) => {
+  if (percent < 25) return "green";
+  if (percent < 75) return "yellow";
+  return "red";
+};
+
 
   const updateProgress = () => {
     const now = Date.now();
