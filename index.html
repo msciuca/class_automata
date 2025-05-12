@@ -170,61 +170,63 @@
   </div>
 
   <script>
-    const CLASS_PERIOD_SECONDS = 1.2 * 60 * 60; // 1.2 hours
-    let elapsedSeconds = 0;
-    let startTime = Date.now();
+  const CLASS_PERIOD_SECONDS = 120 * 60; // 120 minutes per period
+  let startTime = Date.now();
 
-    const bar1 = document.getElementById("bar1");
-    const bar2 = document.getElementById("bar2");
+  const bar1 = document.getElementById("bar1");
+  const bar2 = document.getElementById("bar2");
 
-    const getColor = (percent) => {
-      const r = Math.floor(76 + (255 - 76) * percent / 100);
-      const g = Math.floor(175 - 175 * percent / 100);
-      return `rgb(${r},${g},80)`;
-    };
+  const getColor = (percent) => {
+    const r = Math.floor(76 + (255 - 76) * percent / 100);
+    const g = Math.floor(175 - 175 * percent / 100);
+    return `rgb(${r},${g},80)`;
+  };
 
-    const updateProgress = () => {
-      const now = Date.now();
-      elapsedSeconds = Math.floor((now - startTime) / 1000);
-      let percent1 = 0, percent2 = 0;
+  const updateProgress = () => {
+    const now = Date.now();
+    const elapsedSeconds = Math.floor((now - startTime) / 1000);
 
-      if (elapsedSeconds <= CLASS_PERIOD_SECONDS) {
-        percent1 = (elapsedSeconds / CLASS_PERIOD_SECONDS) * 100;
-      } else {
-        percent1 = 100;
-        const secondPeriodElapsed = elapsedSeconds - CLASS_PERIOD_SECONDS;
-        percent2 = (secondPeriodElapsed / CLASS_PERIOD_SECONDS) * 100;
-      }
+    let percent1 = 0, percent2 = 0;
 
-      bar1.style.width = Math.min(percent1, 100) + "%";
-      bar1.style.backgroundColor = getColor(percent1);
-      bar2.style.width = Math.min(percent2, 100) + "%";
-      bar2.style.backgroundColor = getColor(percent2);
+    if (elapsedSeconds <= CLASS_PERIOD_SECONDS) {
+      percent1 = (elapsedSeconds / CLASS_PERIOD_SECONDS) * 100;
+    } else {
+      percent1 = 100;
+      const secondPeriodElapsed = elapsedSeconds - CLASS_PERIOD_SECONDS;
+      percent2 = (secondPeriodElapsed / CLASS_PERIOD_SECONDS) * 100;
+    }
 
-      if (elapsedSeconds >= 2 * CLASS_PERIOD_SECONDS) {
-        clearInterval(timer);
-      }
-    };
+    bar1.style.width = Math.min(percent1, 100) + "%";
+    bar1.style.backgroundColor = getColor(percent1);
 
-    const resetTimer = (targetSeconds) => {
-      startTime = Date.now() - targetSeconds * 1000;
-    };
+    bar2.style.width = Math.min(percent2, 100) + "%";
+    bar2.style.backgroundColor = getColor(percent2);
 
-    document.getElementById("bar1-container").addEventListener("click", (e) => {
-  const clickX = e.offsetX;
-  const totalWidth = e.currentTarget.offsetWidth;
-  const fraction = clickX / totalWidth;
-  resetTimer(fraction * CLASS_PERIOD_SECONDS);
-});
-    document.getElementById("bar2-container").addEventListener("click", (e) => {
-  const clickX = e.offsetX;
-  const totalWidth = e.currentTarget.offsetWidth;
-  const fraction = clickX / totalWidth;
-  resetTimer(CLASS_PERIOD_SECONDS + (fraction * CLASS_PERIOD_SECONDS));
-});
+    if (elapsedSeconds >= 2 * CLASS_PERIOD_SECONDS) {
+      clearInterval(timer);
+    }
+  };
 
-    const timer = setInterval(updateProgress, 1000);
-  </script>
+  const resetTimer = (targetSeconds) => {
+    startTime = Date.now() - targetSeconds * 1000;
+  };
+
+  document.getElementById("bar1-container").addEventListener("click", (e) => {
+    const clickX = e.offsetX;
+    const totalWidth = e.currentTarget.offsetWidth;
+    const fraction = clickX / totalWidth;
+    resetTimer(fraction * CLASS_PERIOD_SECONDS);
+  });
+
+  document.getElementById("bar2-container").addEventListener("click", (e) => {
+    const clickX = e.offsetX;
+    const totalWidth = e.currentTarget.offsetWidth;
+    const fraction = clickX / totalWidth;
+    resetTimer(CLASS_PERIOD_SECONDS + (fraction * CLASS_PERIOD_SECONDS));
+  });
+
+  const timer = setInterval(updateProgress, 1000);
+</script>
 
 </body>
 </html>
